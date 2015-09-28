@@ -1,0 +1,96 @@
+
+#Add ip-hosts name into /etc/hosts on Lucie
+192.168.1.10 bob
+192.168.1.11 betty
+192.168.0.101 bobl
+
+
+#To divert traffic from lucie01 to lucie02 use:
+sudo route add -net 192.168.0.0/24 dev wlan0 gw lucie01
+Read: https://github.com/strands-project/scitos_robot/wiki/Bob's-Network-Configuration
+
+
+ssh strands@217.155.206.158
+ssh strands@bob (password "strands27")
+ssh bobl  (possible because of export route)
+
+#If you're on Woody, copy files from bob:
+scp strands@bob:/opt/maps/g4s/edited.yaml .
+#If you're on laptop, copy files from woody:
+scp strands@217.155.206.158:/home/strands/paul/edited.yaml .
+
+
+#to work on lucies ROS MASTER
+#add "lucies_ip_address lucie01" into /etc/hosts.
+#add "your_ip_address user_name" into Lucie's /etc/hosts.
+export ROS_MASTER_URI=http://lucie01:11311
+
+#to use mongo store from lucie
+rosparam set mongodb_host lucie01
+
+#to check: rosparam get /mongodb_host 
+#Note: trajectory_importer uses old "datacenter_host" and must be ran locally on Lucie
+
+#Mongodb export database:
+mongoexport --port 62345 -d message_store -c people_perception -o pp.db
+mongoexport --port 62345 -d <database> -c <colection> -o <output_file_name.db>
+
+mongoimport --port 62345 -d message_store -c people_trajectory --file people_trajectory.db
+mongoimport --port 62345 -d <database> -c <colection> --file <input_file_name.db>
+
+#Check dates query: {"_meta.last_updated_at":{"$lt":new Date(2015, 4, 14)} #Note, month is -1. i.e. 4=May
+                    {"_meta.inserted_at" : {"$lt": ISODate("2015-05-13T14:00:00.000Z")}}
+#Trajectory Lengths {"trajectory":{$exists:true}, $where:'this.trajectory.length>30000'}
+query:
+{"uuid":{$exists:true}, $where:'this.episodes[0].spatial_relation == "0,0"'}
+#query for test:
+db.relational_episodes_f1_test.find({uuid : /.*WORLD.*/});
+#Week 5: db.episodes_f1_multi_seq_all_weeks_copy.find({"start_time" : {"$gt": 1433548800}})
+
+#Tmux:
+See: https://gist.github.com/PDuckworth/af7b4424afa6f91180f4
+Use `tmux a -t <session-name>'
+or `tmux ls` to list sessions
+tmux kill-session -t <session-name>
+
+##JSON cheats:
+import json
+#Encoding a json:
+json.dumps, python object to serialised json
+#Decoding a json:
+json.loads, json string to python dictionary
+
+##to kill mongo:
+ps aux | grep mongo
+kill pid_number (not final one)
+#Location of MessageStoreProxy
+https://github.com/strands-project/mongodb_store/blob/hydro-devel/mongodb_store/src/mongodb_store/message_store.py
+
+#To obtain a git pull request in a seperate branch for testing:
+git fetch upstream pull/<num_id>/head:<branch_name_you_want>
+
+#When the map server and rviz have no tf from map to /map...
+rosrun tf static_transform_publisher 0.0 0.0 0.0 0.0 0.0 0.0 map test_frame 100
+
+#ActionLib Server commands:
+rosrun relational_learner OfflineLearning_action.py
+rosrun actionlib axclient.py /OfflineLearning
+
+#Mongodb Indexes
+{loc: 1, start: 1} #will optimise for these fields.
+#{uuid : 1} #can also make index unique. 
+#http://docs.mongodb.org/manual/tutorial/create-an-index/
+
+#To copy a file from B to A while logged into B:
+scp /path/to/file username@a:/path/to/destination
+#To copy a file from B to A while logged into A:
+scp username@b:/path/to/file /path/to/destination
+
+
+#Install python package without sudo:
+python setup.py install prefix="/usr/bin/software/python/anaconda/" 
+
+#Wifi on Lucie troubles:
+sudo service dnsmasq restart 
+
+

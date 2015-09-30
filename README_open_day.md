@@ -42,7 +42,7 @@ The start scrip has embedded multiple terminals. Along the bottom there should b
 mini help sheet:
 
 
-In tmux, hit the prefix `ctrl+b` then let-go then:
+In tmux, hit the prefix `ctrl+b` then:
 
 
     `n` : goes to the next
@@ -60,22 +60,23 @@ Tip: There is no indication if Caps Lock is selected or not on the keyboard. Tmu
 4. Tmux Script
 ----------------
 
-Window ID :    name :   Info
+(Note: Ctrl +b then n to switch to the next window)
 
-0. roscore          -- always first. (runs itself)
-   
-   htop             -- ignore.  (runs itself)
+Window ID :   Window name :   Info
 
+Ignore Pane 0: roscore -- always needs to run first. (runs itself)
+
+  htop             -- ignore (also runs itself)
 
 1. mongodb          -- always run second.
 
-   robomongo        -- not needed - ignore.
+   (split-pane): robomongo        -- not needed - ignore.
  
  
-2. strands_bringup  -- need to check that the joystick says /dev/input/js0 before running.
+2. strands_bringup  -- need to check that the joystick says /dev/input/js1 before running. Else, change the command here.
 
-  wait until it say "going into main loop".
-  NOTE: if there are lots of warnings. Maybe Ctrl+c and re-run this.
+  after executing, wait until it say "going into main loop".
+  NOTE: if there are lots of warnings. Maybe Ctrl+c and re-run this. (sometimes happens if you've just turned the robot on).
 
 
 3. cameras          -- run next (turns the cameras on).
@@ -84,27 +85,27 @@ Window ID :    name :   Info
 4. strands UI       -- MARY server... starting (allows lucie to speak).
 
 
-5. navigation       -- main script for loading map and waypoints. More info [here](https://github.com/strands-project/strands_navigation/tree/indigo-devel/topological_navigation)
+5. navigation       -- main script for loading robot map and waypoints. More info [here](https://github.com/strands-project/strands_navigation/tree/indigo-devel/topological_navigation)
 
 
 6. rviz             -- for visualisation. 
 
 
-  Check RVIZ: check the map loads, the robot model is correcly positioned, laser (red dots) appear and the waypoints can be seen as green arrows.
+  Check RVIZ: check the map loads, the robot model is correcly positioned, laser (red dots) appear and the waypoints can be seen as green arrows. (more info below).
 
   If Lucie is not located on the charge station, there is a '2D Pose Estimate' button at the top which can be used to set her position in the map.
 
-  Tip: Often you can uncheck and then re-check the tick box (in the left panel) for the specific topic to be shown.
+  Tip: Often topics don't load, and you can uncheck and then re-check the tick box (in the left panel) for the specific topic to be shown.
 
 
 7. people           -- to detect and log to the database people detection. (Ctrl + b then 'down arrow' to switch between panes).
 
-  trajectories     -- to stitch detections into people trajectories (and log them).
-
+  (split-pane): trajectories     -- to stitch detections into people trajectories (and log them). (Ctrl+b then down arrow to select bottom pane).
+.
 
 8. schedule         -- always start before the routine below (wait a minute)
 
-    routine          -- sends tasks (= wait at different waypoints).
+   (split-pane): routine          -- sends tasks which are to navigate to the different waypoints. (Ctrl+b then down arrow to select bottom pane).
 
   more info [here](https://github.com/strands-project/strands_executive/blob/hydro-release/README.md) and [here](https://github.com/strands-project/strands_executive)
 
@@ -112,7 +113,7 @@ Window ID :    name :   Info
 
 5. RVIZ
 ----------------
-This is the visualisation tool used in ROS. It visualises many different topics being published by the various scripts.
+This is the visualisation tool used in ROS. It visualises many different topics being published by the various scripts being ran.
 
 The default configuration should load:
 
@@ -124,9 +125,7 @@ The default configuration should load:
   
   * waypoint (go to)   -- These are clickable, and will send the robot there (technically it will be a task added into the schedule, so it might not be instant).
   
-  * people tracker     -- to represent detected people 
-
-
+  * people tracker     -- to represent detected people on the map
 
 
 
@@ -158,4 +157,10 @@ NOTE: Not exact instruction at the moment!
       Run `ps aux | grep mongodb` in a new terminal, it will show if it is locked, then `sudo kill process_ID_number` will stop it. No need to kill the last one in the list.
 
 
+8. End of the Day
+-------------------
+
+Lucie's routine is to patroll between the hours of 8.30 and 5.30. Outside of these hours she should go to her charge station. However, if you need the day to end before that, you can stop the routine / schedule and click on the green waypoint in rviz which will send her to a specific place (charge station is recommended).
+
+To close Tmux, Ctrl+b then d detaches from the session, and you can then do: `tmux kill-session -t lucie01` to end all the embeded terminals. (Or you can run the kill-session in another terminal without detaching.
 

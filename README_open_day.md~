@@ -60,8 +60,9 @@ Tip: There is no indication if Caps Lock is selected or not on the keyboard. Tmu
 4. Tmux Script
 ----------------
 
-Essentially, you need to scroll through each Tmux window and start them running (press enter). More details on each window is given below. (Note: Ctrl +b then n to switch to the next window).
+(Note: Ctrl +b then n to switch to the next window)
 
+Window ID :   Window name :   Info
 
 Ignore Pane 0: roscore -- always needs to run first. (runs itself)
 

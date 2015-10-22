@@ -1,6 +1,9 @@
 #!/bin/bash
 
 SESSION=$USER
+DATABASE=/home/lucie01/mongodb_store/cs_level_9/
+MAP=/home/lucie01/robot_files/level_9_map.yaml
+WAYPOINTS=open_day_waypoints
 
 tmux -2 new-session -d -s $SESSION
 # Setup a window for tailing log files
@@ -25,7 +28,7 @@ tmux send-keys "htop" C-m
 tmux select-window -t $SESSION:1
 tmux split-window -v
 tmux select-pane -t 0
-tmux send-keys "roslaunch mongodb_store mongodb_store.launch db_path:=/home/lucie01/mongodb_store/cs_level_9/ port:=62345"
+tmux send-keys "roslaunch mongodb_store mongodb_store.launch db_path:=$DATABASE port:=62345"
 tmux resize-pane -D 30
 tmux select-pane -t 1
 tmux send-keys "robomongo"
@@ -42,7 +45,7 @@ tmux send-keys "roslaunch strands_bringup strands_ui.launch"
 
 
 tmux select-window -t $SESSION:5
-tmux send-keys "roslaunch strands_bringup strands_navigation.launch with_camera:=True camera:=head_xtion map:=/home/lucie01/robot_files/level_9_map.yaml with_no_go_map:=False no_go_map:=/home/lucie01/robot_files/no_go_map.yaml with_mux:=False topological_map:=open_day_waypoints"
+tmux send-keys "roslaunch strands_bringup strands_navigation.launch with_camera:=True camera:=head_xtion map:=$MAP with_no_go_map:=False no_go_map:=/home/lucie01/robot_files/no_go_map.yaml with_mux:=False topological_map:=$WAYPOINTS"
 
 tmux select-window -t $SESSION:6
 tmux send-keys "rosrun rviz rviz"

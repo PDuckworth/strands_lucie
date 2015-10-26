@@ -1,6 +1,6 @@
 # HOW TO: LUCIE Open Days
 
-Document to start Lucie at Open Days (in the long-room of EC Stoner). 
+Document to start Lucie at Open Days (in the long-room of EC Stoner).
 
 
 1. Turn ON
@@ -20,6 +20,8 @@ Account 'Lucie01'
 
 Select WiFi network (top right corner). It's best to select Eduroam although it's not essential to be online.
 
+If the internet doesn't work - you might need to run the command: `sudo service dnsmasq restart` in a terminal.
+
 
 CHECK: Open the 'JoyStick' application (shortcut on the left). Check it displays the joystick with '..dev/input/js0'. (Remember if it's different!)
 
@@ -36,7 +38,7 @@ A Tmux terminal session will open, and a split screen with 'roscore' on the left
 
 Tmux - (background reading)
 ------------
-The start scrip has embedded multiple terminals. Along the bottom there should be a list 0 to 8 (ish), they all have a name too. 
+The start scrip has embedded multiple terminals. Along the bottom there should be a list 0 to 8 (ish), they all have a name too.
 
 
 mini help sheet:
@@ -49,8 +51,8 @@ In tmux, hit the prefix `ctrl+b` then:
     'p' : goes to the previous
     '4' : goes to window number 4
     'up/down/left/right arrow' moves betwen selected panes if the current window is split into multiple.
-    
-    
+
+
 Here is a full [tmux cheatsheet](https://gist.github.com/PDuckworth/af7b4424afa6f91180f4)
 
 
@@ -70,8 +72,8 @@ Ignore Pane 0: roscore -- always needs to run first. (runs itself)
 1. mongodb          -- always run second.
 
    (split-pane): robomongo        -- not needed - ignore.
- 
- 
+
+
 2. strands_bringup  -- need to check that the joystick says /dev/input/js1 before running. Else, change the command here.
 
   after executing, wait until it say "going into main loop".
@@ -87,7 +89,7 @@ Ignore Pane 0: roscore -- always needs to run first. (runs itself)
 5. navigation       -- main script for loading robot map and waypoints. More info [here](https://github.com/strands-project/strands_navigation/tree/indigo-devel/topological_navigation)
 
 
-6. rviz             -- for visualisation. 
+6. rviz             -- for visualisation.
 
 
   Check RVIZ: check the map loads, the robot model is correcly positioned, laser (red dots) appear and the waypoints can be seen as green arrows. (more info below).
@@ -117,13 +119,13 @@ This is the visualisation tool used in ROS. It visualises many different topics 
 The default configuration should load:
 
   * map
-  
+
   * robot model
-  
+
   * lazer scanner      
-  
+
   * waypoint (go to)   -- These are clickable, and will send the robot there (technically it will be a task added into the schedule, so it might not be instant).
-  
+
   * people tracker     -- to represent detected people on the map
 
 
@@ -133,25 +135,25 @@ The default configuration should load:
   * If Lucie is perfoming a scheduled task, you can always stop the corresponging Tmux panes: (5. or 9.)
 Press Ctrl+c as many times as you can :)
 
-  * Use the JoyStick  -- Press and hold LB and Lucie should stop. The analogue D-pad can be used to drive her around. 
+  * Use the JoyStick  -- Press and hold LB and Lucie should stop. The analogue D-pad can be used to drive her around.
 If the bumper is pressed, her motors will be dissengaged. Press START on the joystick to resume controlling her.
 
-  * On the mini-screen used to turn the robot on/off, there is a drive option which allows you to access the "Free Run" - which allows you to push her very easily. 
-NOTE: Not exact instruction at the moment! 
+  * On the mini-screen used to turn the robot on/off, there is a drive option which allows you to access the "Free Run" - which allows you to push her very easily.
+NOTE: Not exact instruction at the moment!
 
 
 7. Current Issues
 ----------------
 
-  * Door Pass    -- currently the routine include some waypoints in the study room. These are accessed via a "door pass" waypoint (just outside the door). 
+  * Door Pass    -- currently the routine include some waypoints in the study room. These are accessed via a "door pass" waypoint (just outside the door).
 
   This works if the door is open. However, if the door is closed, the scheduler does not seem to set a new task (which would involve driving away from the door to another waypoint).
 
-  * Restarts  -- if for any reason you need to close everthing and re-start. Two things you must do two things: 
+  * Restarts  -- if for any reason you need to close everthing and re-start. Two things you must do two things:
 
    1. `tmux kill-session -t lucie01` in a new terminal, will stop the tmux session cmpletely. Just closing the terminal wont stop it (it can be re-accessed with: "tmux a -t lucie01")
-                
-                
+
+
    2. Mongodb (pane 1 in tmux), doesn't always close cleanly and often leaves a lock inplace preventing you running it again.
       Run `ps aux | grep mongodb` in a new terminal, it will show if it is locked, then `sudo kill process_ID_number` will stop it. No need to kill the last one in the list.
 
@@ -162,4 +164,3 @@ NOTE: Not exact instruction at the moment!
 Lucie's routine is to patroll between the hours of 8.30 and 5.30. Outside of these hours she should go to her charge station. However, if you need the day to end before that, you can stop the routine / schedule and click on the green waypoint in rviz which will send her to a specific place (charge station is recommended).
 
 To close Tmux, Ctrl+b then d detaches from the session, and you can then do: `tmux kill-session -t lucie01` to end all the embeded terminals. (Or you can run the kill-session in another terminal without detaching.
-

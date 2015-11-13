@@ -1,4 +1,4 @@
-image: /home/lucie01/robot_files/parkinson_foyer3.pgm
+image: /home/lucie01/robot_files/parkinson_inc_outside.pgm
 resolution: 0.050000
 origin: [-213.600000, -100.000000, 0.000000]
 negate: 0
